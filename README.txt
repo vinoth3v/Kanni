@@ -24,6 +24,13 @@ Telugu: Phonetic, Typewriter
 
 more languages are on the way... 
 
+The name "Kanni":
+
+"Kanni" is the tamil language word which means "first ever, virgin, girl, virginity, the zodiac sign Virgo". 
+see (http://ta.wiktionary.org/wiki/%E0%AE%95%E0%AE%A9%E0%AF%8D%E0%AE%A9%E0%AE%BF)
+
+Tamil is the most ancient language in the world and it is one of the longest surviving classical languages in the world.
+
 Authors:
 
 KANNI Core Library:	Vinoth Kanyakumari <vinoth.3v@gmail.com>
