@@ -1,0 +1,10 @@
+Change logs
+===========================
+
+
+
+version 0.5.x
+===========================
+now it supports HTML editoable area.
+support for CKEditor. Kanni has the ckeditor plugin. 
+
