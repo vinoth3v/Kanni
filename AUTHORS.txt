@@ -1,4 +1,4 @@
-﻿Kanni IME Transliteration Javascrit Library
+﻿Kanni IME Transliteration Javascript Library
 
 This software consists of voluntary contributions made by many
 individuals. 

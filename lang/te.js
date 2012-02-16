@@ -1,4 +1,4 @@
-/*  Kanni IME Transliteration Javascrit Library
+/*  Kanni IME Transliteration Javascript Library
  *  Copyright (c) 2012 http://tamilnanbargal.com
  *  
  *  Some part of the language mappings are copied from Gopi's Unicode Converter(http://www.higopi.com)

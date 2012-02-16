@@ -1,4 +1,4 @@
-/*  Kanni IME Transliteration Javascrit Library
+/*  Kanni IME Transliteration Javascript Library
  *  Copyright (c) 2012 http://tamilnanbargal.com
  *
  *  Kanni GIT repository: https://github.com/vinoth3v/Kanni
