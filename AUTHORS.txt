@@ -1,0 +1,15 @@
+﻿Kanni IME Transliteration Javascrit Library
+
+This software consists of voluntary contributions made by many
+individuals. 
+
+Authors:
+
+KANNI Core Library:
+
+Vinoth Kanyakumari <vinoth.3v@gmail.com>
+
+Language mapping:
+
+Gopalakrishnan (Gopi) <gopi@higopi.com>
+
