@@ -21,20 +21,24 @@
  * intact, stating me as the original author.
 **/
 
-Kanni['languages']['ma_tw'] = {
-  'language' : "Malayalam",      // language Name
+Kanni['languages']['malayalam'] = {
+  'name' : "Malayalam",      // language Name
+  'charfrom' : '0D00',
+  'charto' : '0D7F',
   'chnbin' : "\u0D4D",
   'ugar' : "\u0D41",
   'uugar' : "\u0D42",
+  'methods' : {}             // character map
+};
+
+Kanni['languages']['malayalam']['methods']['ma_tw'] = {
   'method' : 'typewriter',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : false,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
-Kanni['languages']['ma_en'] = {
-  'language' : "Malayalam",
-  'chnbin' : "\u0D4D",
+Kanni['languages']['malayalam']['methods']['ma_en'] = {
   'method' : 'phonetic',
   'maxchar' : '4',
   'mergeprevchar' : true,
@@ -248,5 +252,5 @@ ma_en['\u200D0'] = "\u0D66";
 ma_en['(.+)\u200C(.+)'] = "$1$2";
 
 
-Kanni['languages']['ma_tw']['charmap'] = ma_tw;
-Kanni['languages']['ma_en']['charmap'] = ma_en;
+Kanni['languages']['malayalam']['methods']['ma_tw']['charmap'] = ma_tw;
+Kanni['languages']['malayalam']['methods']['ma_en']['charmap'] = ma_en;

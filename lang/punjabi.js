@@ -21,27 +21,28 @@
  * intact, stating me as the original author.
 **/
 
-
-Kanni['languages']['pu_tw'] = {
-  'language' : "Punjabi",      // language Name
+Kanni['languages']['punjabi'] = {
+  'name' : "Punjabi",      // language Name
+  'charfrom' : '0A00',
+  'charto' : '0A7F',
   'chnbin' : "\u0A4D",
   'ugar' : "\u0A41",
   'uugar' : "\u0A42",
+  'methods' : {}
+};
+
+Kanni['languages']['punjabi']['methods']['pu_tw'] = {
   'method' : 'typewriter',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : false,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
-Kanni['languages']['pu_en'] = {
-  'language' : "Punjabi",      // language Name
-  'chnbin' : "\u0A4D",
-  'ugar' : "\u0A41",
-  'uugar' : "\u0A42",
+Kanni['languages']['punjabi']['methods']['pu_en'] = {
   'method' : 'phonetic',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : true,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
 
@@ -251,7 +252,7 @@ pu_en['(.+)\u200C(.+)'] = "$1$2";
 
 
 
-Kanni['languages']['pu_en']['charmap'] = pu_en;
-Kanni['languages']['pu_tw']['charmap'] = pu_tw;
+Kanni['languages']['punjabi']['methods']['pu_en']['charmap'] = pu_en;
+Kanni['languages']['punjabi']['methods']['pu_tw']['charmap'] = pu_tw;
 
 

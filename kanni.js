@@ -34,28 +34,30 @@
 		 */
 		window.Kanni = {
 			'language' : 'en',		// default language
+			'method' : '',		// default language
+			'_planguage' : 'en', // previous language
+			'_pmethod' : '', // previous typing method
 			'languages' : {},				// languages
 			'switchkey' : 120, 			// F9
-			'_previousLanguage_' : 'en', // previous typing method
-			'showtios' : true,
+			'activeelement' : null,	// active input element
+			'showtips' : true
 		};
-		
 	}
 
 	/**
 	 * @name initialize
 	 * 
-	 * This is NOT a constrctor function.
+	 * This is NOT a constructor function.
 	 * 
 	 */
-	Kanni.init = function(attachLangSwitch, swtchkey) {
+	Kanni.init = function(attachLangSwitch, switchkey) {
 		
 		if (typeof attachLangSwitch == 'undefined') {
 			attachLangSwitch = true;
 		}
 		
 		if (typeof attachLangSwitch !== 'undefined') {
-			this.switchKey(swtchkey);
+			this.switchKey(switchkey);
 		}
 		
 		if (attachLangSwitch) {
@@ -67,7 +69,7 @@
 				return true;
 			}
 			
-			Kanni.method(select.value);
+			Kanni.langMethod(select.value);
 			
 			this._attachEvent(document, 'keyup', function(e) {
 				e = e || event;
@@ -102,6 +104,18 @@
 	 */ 
 	Kanni.process = function (char, currstr, offset, lang) {
 		
+		if (!lang) {
+			lang = {
+				'language' : this.language, 
+				'method' : this.method
+			};
+		}
+		
+		config = Kanni.langConfig(lang);
+		if (!config) {
+			return false;
+		}
+		
 		// left_prev_(offset)new_right
 		
 		var leftstr = '';
@@ -111,8 +125,8 @@
 		var replacecount = 0;
 		var maxprevchar = 4;
 		
-		if ('maxchar' in this.languages[lang]) {
-			maxprevchar = this.languages[lang].maxchar;
+		if ('maxchar' in config.method) {
+			maxprevchar = config.method.maxchar;
 		}
 		
 		if (offset <= 0) {
@@ -164,14 +178,16 @@
 		
 		var new_string = prevchar + newchar;
 		
-		if (lang in Kanni['languages']) {
+		var config = Kanni.langConfig(lang);
+		
+		if (config) {
 			
-			var charmap = Kanni['languages'][lang]['charmap'];
+			var charmap = config.method.charmap;
 			
 			for(var char in charmap) {
-				//rexp = new RegExp(char, 'g');
-				//new_string = new_string.replace(rexp, charmap[char]);
-				new_string = new_string.replace(char, charmap[char]);
+				rexp = new RegExp(char, 'g');
+				new_string = new_string.replace(rexp, charmap[char]);
+				//new_string = new_string.replace(char, charmap[char]);
 			}
 		
 		}
@@ -202,15 +218,14 @@
 		var offset = 0;
 		
 		if ( key == Kanni.switchkey ) {
-			//Kanni.toggle();
 			return false;
 		}
 		
 		if (Kanni.language == 'en' ) {
 			return true;
 		}
-		
-		if (!Kanni.keyValidator(event, Kanni.language)) {
+		var lang = {'language' : this.language, 'method' : this.method}
+		if (!Kanni.keyValidator(event, lang)) {
 			return true;
 		}
 		
@@ -224,7 +239,7 @@
 			
 			if ('selectionStart' in node) {
 				offset = node.selectionStart;
-			}else {
+			} else {
 				range = document.selection.createRange();
 
 				if (range && range.parentElement() == node) {
@@ -258,7 +273,7 @@
 				
 			}
 			
-			var result = Kanni.process(char, currstr, offset, Kanni.language);
+			var result = Kanni.process(char, currstr, offset);
 			var newstr = result['left'] + result['new'] + result['right'];
 			
 			node.value = newstr;
@@ -268,7 +283,7 @@
 			offset = value.length;
 			
 			if ('selectionStart' in node) {
-				node.selectionStart = offset;	
+				node.selectionStart = offset;
 				node.selectionEnd = offset;
 			} else if ('setSelectionRange' in node) {
 				field.setSelectionRange(offset, offset);
@@ -366,7 +381,7 @@
 					}
 				}
 				
-				result = Kanni.process(char, nodevalue, offset, Kanni.language);
+				result = Kanni.process(char, nodevalue, offset);
 				
 				newstr = result['left'] + result['new'] + result['right'] ;
 				//alert('--' + result['left'] + '--' + result['new'] + '--' + result['right'] + '--' );
@@ -380,7 +395,7 @@
 				
 			} else {
 				
-				result = Kanni.process(char, '', offset, Kanni.language);
+				result = Kanni.process(char, '', offset);
 				
 				newstr = result['left'] + result['new'] + result['right'];
 				
@@ -484,22 +499,51 @@
 		
 		if (lang) {
 			
-			if (!lang in Kanni.languages) {
-				return false;
-			}
-			
-			if (!this._charExistsInMap(char, lang)) {
+			if (!this.charExistsInMap(char, lang)) {
 				return false;
 			}
 			
 		}
 		
 		return true;
+	};
+	
+	Kanni.langConfig = function(lang) {
+		
+		if (!lang) {
+			lang = {
+				'language' : this.language, 
+				'method' : this.method
+			};
+		}
+		
+		if (!(lang.language in this.languages)) {
+			return false;
+		}
+		
+		var langconfig = this.languages[lang.language];
+		
+		var methods = langconfig['methods'];
+		if (!(lang.method in methods)) {
+			return false;
+		}
+		var methodconfig = methods[lang.method];
+		return {
+			'language' : langconfig,
+			'method' : methodconfig
+		};
+		
 	}
 	
-	Kanni._charExistsInMap = function(char, lang) {
-		lang_map = Kanni.languages[lang].charmap;
-			
+	Kanni.charExistsInMap = function(char, lang) {
+		
+		config = this.langConfig(lang);
+		if (!config) {
+			return false;
+		}
+		
+		var lang_map = config.method.charmap;
+		
 		for(c in lang_map) {
 			if (c == char || lang_map[c] == char) {
 				return true;
@@ -523,12 +567,18 @@
 		return false;
 	}
 	
+	Kanni.insertChar = function(char) {
+		if (!this.activeelement) {
+			return;
+		}
+	};
+	
 	Kanni.showTips = function(str) {
 		
 		if (this.language == 'en') {
 			return;
 		}
-		if (! this.languages[this.language].mergeprevchar) {
+		if (! this.languages[this.language]['methods'][this.method].mergeprevchar) {
 			return;
 		}
 		
@@ -540,7 +590,7 @@
 		
 		for(var idx=0; idx < atoz.length; idx++) {
 			c = atoz.substr(idx, 1);
-			result = this.process(c, str, str.length, this.language);
+			result = this.process(c, str, str.length);
 			newstr = newstr + '&nbsp;&nbsp;' + result['prev'] + ' + ' + c + ' = <b>' + result['new'] + '</b>';
 		}
 		
@@ -550,41 +600,63 @@
 		this.showTipsDiv();
 	}
 
-	Kanni.switchKey = function(swtchkey) {
-		if (swtchkey) {
-			this.swtchkey = swtchkey;
+	Kanni.switchKey = function(switchkey) {
+		if (switchkey) {
+			this.switchkey = switchkey;
 		}
 		
-		return this.swtchkey;
+		return this.switchkey;
 	}
 	
 	/**
 	 * Set or return the current typing method.
 	 */ 
-	Kanni.method = function (current_method) {
+	Kanni.langMethod = function (new_method) {
 		
-		if (current_method) {
+		if (new_method) {
+			if (typeof new_method == 'string') {
+				
+				new_method = new_method.split('|');
+				
+				new_method = {
+					'language' : new_method[0], 
+					'method' : new_method[1]
+				};
+			} else if (typeof new_method == 'object') {
+				//
+			} else { // not a valid parameter
+				return false;
+			}
+			
 			// set the previous method so we can restore.
-			this._previousLanguage_ = this.language;
-		
-			this.language = current_method;
+			this._planguage = this.language;
+			this._pmethod = this.method;
+			
+			this.language = new_method.language;
+			this.method = new_method.method;
+			
 			select = document.getElementById('kanni-lang-switch');
 			if (select) {
-				select.value = this.language;
+				select.value = this.language + '|' + this.method;
 			}
+			
+			this.initKeyboard();
 			
 			var expires = new Date();
 			expires.setTime(expires.getTime() + 1000*3600*24*30);
-			this._set_cookie('kanni_user_lang', this.language, expires, '/');
+			this._set_cookie('kanni_user_lang', this.language + '|' + this.method, expires, '/');
 		
 		}
 		
-		return this.language;
+		return {
+			'language' : this.language, 
+			'method' : this.method
+		};
 	};
 	
 	/**
-	 * Set or return the current typing method.
-	 * toggle between english and the current language.
+	 * set or returns the tips flag.
+	 * 
 	 */ 
 	Kanni.tips = function (show) {
 		
@@ -610,15 +682,15 @@
 	};
 	
 	/**
-	 *  Toggle the typing method
+	 *  Toggle the language and typing method
 	 * 
 	 */
 	Kanni.toggle = function () {
 		
 		if(this.language != 'en') {
-			this.method('en');
+			this.langMethod('en|en');
 		} else {
-			this.method(this._previousLanguage_);
+			this.langMethod({'language' : this._planguage, 'method' : this._pmethod});
 		}
 		
 	};
@@ -628,12 +700,29 @@
 	 * 
 	 */ 
 	Kanni.attachLanguageSwitcher = function (div){
+		var css = '#kanni-lang-switch-block {padding:5px;text-align:left;z-index:99;line-height:1em;position:fixed;width:150px;bottom:0px;left:10px;background:#EDF5FA;border:solid 1px #336699;display:none;}';
+		css = css + '#kanni-lang-switch-block select {width:140px}';
+		css = css + '#kanni-lang-tips-block{display:none;z-index:99;position:fixed;left:170px;bottom:0px;background-color:#EDF5FA;border:solid 1px #336699}';
+		css = css + '#kanni-lang-keyboard-block{display:none;z-index:99;position:fixed;left:165px;bottom:0px;background-color:#EDF5FA;border:solid 1px #336699}';
 		
-		var options = '<option value="en">English</option>';
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			styleElement.appendChild(document.createTextNode(css));
+		}
+		document.getElementsByTagName("head")[0].appendChild(styleElement);
+
+
+		var options = '<option value="en|en">English</option>';
 		
-		for (lang in this.languages) {
-			langconfig = this.languages[lang];
-			options += '<option value="' + lang + '">' + langconfig['language'] + ' - ' + langconfig['method'] + '</option>';
+		for (var lang in this.languages) {
+			var langconfig = this.languages[lang];
+			for (var method in langconfig.methods) {
+				methodconfig = langconfig.methods[method];
+				options += '<option value="' + lang + '|' + method + '">' + langconfig['name'] + ' - ' + methodconfig['method'] + '</option>';
+			}
 		}
 		
 		var tips = this._get_cookie('kanni_user_tips');
@@ -644,13 +733,13 @@
 			tips = '';
 		}
 		
-		var check = '<label for="kanni-lang-tips">Show tips</label><input type="checkbox" ' + tips + ' id="kanni-lang-tips" />';
-		
+		var check = '<input type="checkbox" ' + tips + ' id="kanni-lang-tips" /> tips | ';
+		var kb = '<a href="#" onclick="Kanni.showKeyboard();">Keyboard</a>'
 		var content = '<label for="kanni-lang-switch">Type method</label>'
 				+ '<select id="kanni-lang-switch">' 
 				+ options 
 				+ '</select>'
-				+ '<div>' + check + '</div>';
+				+ '<div>' + check + kb + '</div>';
 		
 		var node = document.createElement('div');
 		
@@ -667,24 +756,15 @@
 		
 		div.appendChild(node);
 		
-		Kanni._setStyleAttribute(node, 'display', 'none'); // to hide
-		Kanni._setStyleAttribute(node, 'z-index', '99');
-		Kanni._setStyleAttribute(node, 'position', 'fixed');
-		Kanni._setStyleAttribute(node, 'width', '150px');
-		Kanni._setStyleAttribute(node, 'bottom', '0px');
-		Kanni._setStyleAttribute(node, 'left', '10px');
-		Kanni._setStyleAttribute(node, 'background-color', '#EDF5FA');
-		Kanni._setStyleAttribute(node, 'border', 'solid 1px #336699');
-		
 		var select = document.getElementById('kanni-lang-switch');
 		
 		var m = this._get_cookie('kanni_user_lang');
 		if (m) {
-			this.method(m);
+			this.langMethod(m);
 		}
 		
 		Kanni._attachEvent(select, 'change', function() {
-			Kanni.method(select.value);
+			Kanni.langMethod(select.value);
 		});
 		
 		showtips = document.getElementById('kanni-lang-tips');
@@ -692,20 +772,11 @@
 			Kanni.tips(showtips.checked);
 		});
 		
-		
 		// tips block
 		var node = document.createElement('div');
 		node.setAttribute('class', 'kanni-lang-tips-block');
 		node.setAttribute('id', 'kanni-lang-tips-block');
 		div.appendChild(node);
-		
-		Kanni._setStyleAttribute(node, 'display', 'none'); // to hide
-		Kanni._setStyleAttribute(node, 'z-index', '99');
-		Kanni._setStyleAttribute(node, 'position', 'fixed');
-		Kanni._setStyleAttribute(node, 'left', '165px');
-		Kanni._setStyleAttribute(node, 'bottom', '0px');
-		Kanni._setStyleAttribute(node, 'background-color', '#EDF5FA');
-		Kanni._setStyleAttribute(node, 'border', 'solid 1px #336699');
 		
 		Kanni._attachEvent(document, 'mousemove', function() {
 			Kanni.hideTipsDiv();
@@ -717,41 +788,73 @@
 		node.setAttribute('id', 'kanni-lang-keyboard-block');
 		div.appendChild(node);
 		
-		//Kanni._setStyleAttribute(node, 'display', 'none'); // to hide
-		Kanni._setStyleAttribute(node, 'z-index', '99');
-		Kanni._setStyleAttribute(node, 'position', 'fixed');
-		Kanni._setStyleAttribute(node, 'left', '165px');
-		Kanni._setStyleAttribute(node, 'bottom', '0px');
-		Kanni._setStyleAttribute(node, 'background-color', '#EDF5FA');
-		Kanni._setStyleAttribute(node, 'border', 'solid 1px #336699');
+		return;
+	};
+	
+	Kanni.initKeyboard = function(lang) {
 		
-		var ctrl;
-		var digits=new Array("0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F");
-		var d3d2 = '0B';
-		var nn = '';
-		
-		d3=d3d2.charAt(0);
-    d2=d3d2.charAt(1);
-    
-    for (var v1=0; v1 < 16; v1++) {
-			var d1 = digits[v1];
-			ctrl=(d3==0 && d2==0 && d1<=1);
-			for (var v0=0; v0 < 16; v0++) {
-				var d0 = digits[v0];
-				if (!ctrl) {
-					nn += '&nbsp;&nbsp; ' + eval(' "\\u'+d3+d2+d1+d0 + '" ');
-				} else {
-					//eval("theform.c"+d1+d0+".value=\"[]\"");
-				}
+		var keyboard = document.getElementById('kanni-lang-keyboard-block');
+		if (!keyboard) {
+			return;
+		}
+		if (!lang) {
+			lang = {
+				'language' : this.language, 
+				'method' : this.method
+			};
+		}
+		for(var idx in keyboard.childNodes) {
+			this._setStyleAttribute(keyboard.childNodes[idx], 'display', 'none');
+		}
+			
+		kb = document.getElementById('kanni-kb-' + this.language)
+		if (kb) {
+			
+			this._setStyleAttribute(kb, 'display', 'block');
+			
+		} else {
+			config = this.langConfig(lang);
+			if (!config) {
+				return;
 			}
-    }
-    keyboard = document.getElementById('kanni-lang-keyboard-block');
-		keyboard.innerHTML = nn;
+			
+			var charkeyfrom  = eval('"\\u'+ config.language.charfrom + '"').charCodeAt(0);
+			var charkeyto  = eval('"\\u'+ config.language.charto + '"').charCodeAt(0);
+			var buttons = '<a href="#" onclick="Kanni.hideKeyboard();"> X </a>';
+			for (var ucharkey=charkeyfrom; ucharkey <= charkeyto; ucharkey++) {
+				var char = String.fromCharCode(ucharkey);
+				
+				buttons += '<input type="button" class="' + ucharkey + '" value="' + char + '" onclick="Kanni.insertChar(this.value);"/>';
+				
+			}
+			
+			var node = document.createElement('div');
+			node.setAttribute('class', 'kanni-kb-' + this.language);
+			node.setAttribute('id', 'kanni-kb-' + this.language);
+			
+			keyboard.appendChild(node);
+			node.innerHTML = buttons;
+			
+		}
+		
+	};
+	
+	Kanni.showKeyboard = function () {
+		var keyboard = document.getElementById('kanni-lang-keyboard-block');
+		Kanni._setStyleAttribute(keyboard, 'display', 'block');
+	};
+	
+	Kanni.hideKeyboard = function () {
+		var keyboard = document.getElementById('kanni-lang-keyboard-block');
+		Kanni._setStyleAttribute(keyboard, 'display', 'none');
 	};
 	
 	Kanni.showLanguageSwitcher = function () {
-		if ('_langswitchtimer_' in this) {
-			clearTimeout(this._langswitchtimer_);
+		
+		Kanni.activeelement = this;
+		
+		if ('_langswitchtimer_' in Kanni) {
+			clearTimeout(Kanni._langswitchtimer_);
 		}
 		var div = document.getElementById("kanni-lang-switch-block");
 		if (typeof jQuery != 'undefined') {
@@ -762,7 +865,8 @@
 	};
 	
 	Kanni.hideLanguageSwitcher = function (){
-		this._langswitchtimer_ = setTimeout('Kanni._hideLanguageSwitcher();', 5000);
+		Kanni.activeelement = null;
+		Kanni._langswitchtimer_ = setTimeout('Kanni._hideLanguageSwitcher();', 5000);
 	};
 
 	/**
@@ -770,8 +874,8 @@
 	 * 
 	 */
 	Kanni._hideLanguageSwitcher = function (){
-		if ('_langswitchtimer_' in this) {
-			clearTimeout(this._langswitchtimer_);
+		if ('_langswitchtimer_' in Kanni) {
+			clearTimeout(Kanni._langswitchtimer_);
 		}
 		var div = document.getElementById("kanni-lang-switch-block");
 		if (typeof jQuery != 'undefined') {

@@ -21,26 +21,29 @@
  * intact, stating me as the original author.
 **/
 
-Kanni['languages']['or_tw'] = {
-  'language' : "Oriya",      // language Name
+Kanni['languages']['oriya'] = {
+  'name' : "Oriya",      // language Name
+  'charfrom' : '0B00',
+  'charto' : '0B7F',
   'chnbin' : "\u0B4D",
   'ugar' : "\u0B41",
   'uugar' : "\u0B42",
+  'methods' : {}             // character mao
+};
+
+
+Kanni['languages']['oriya']['methods']['or_tw'] = {
   'method' : 'typewriter',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : false,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
-Kanni['languages']['or_en'] = {
-  'language' : "Oriya",      // language Name
-  'chnbin' : "\u0B4D",
-  'ugar' : "\u0B41",
-  'uugar' : "\u0B42",
+Kanni['languages']['oriya']['methods']['or_en'] = {
   'method' : 'phonetic',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : true,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
 
@@ -254,7 +257,5 @@ or_en['\u200D0'] = "\u0B66";
 or_en['(.+)\u200C(.+)'] = "$1$2";
 
 
-Kanni['languages']['or_tw']['charmap'] = or_tw;
-Kanni['languages']['or_en']['charmap'] = or_en;
-
-
+Kanni['languages']['oriya']['methods']['or_tw']['charmap'] = or_tw;
+Kanni['languages']['oriya']['methods']['or_en']['charmap'] = or_en;

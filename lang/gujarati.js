@@ -21,20 +21,24 @@
  * intact, stating me as the original author.
 **/
 
-Kanni['languages']['gu_tw'] = {
+Kanni['languages']['gujarati'] = {
   'language' : "Gujarati",      // language Name
+  'charfrom' : '0A80',
+  'charto' : '0AFF',
   'chnbin' : "\u0ACD",
   'ugar' : "\u0AC1",
   'uugar' : "\u0AC2",
+  'methods' : {}             // character mao
+};
+
+Kanni['languages']['gujarati']['methods']['gu_tw'] = {
   'method' : 'typewriter',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : false,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
-Kanni['languages']['gu_en'] = {
-  'language' : "Gujarati",
-  'chnbin' : "\u0ACD",
+Kanni['languages']['gujarati']['methods']['gu_en'] = {
   'method' : 'phonetic',
   'maxchar' : '4',
   'mergeprevchar' : true,
@@ -250,6 +254,6 @@ gu_en['\u200D0'] = "\u0AE6";
 gu_en['(.+)\u200C(.+)'] = "$1$2";
 
 
-Kanni['languages']['gu_tw']['charmap'] = gu_tw;
-Kanni['languages']['gu_en']['charmap'] = gu_en;
+Kanni['languages']['gujarati']['methods']['gu_tw']['charmap'] = gu_tw;
+Kanni['languages']['gujarati']['methods']['gu_en']['charmap'] = gu_en;
 

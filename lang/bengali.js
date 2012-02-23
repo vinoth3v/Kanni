@@ -21,20 +21,24 @@
  * intact, stating me as the original author.
 **/
 
-Kanni['languages']['be_tw'] = {
+Kanni['languages']['bengali'] = {
   'language' : "Bengali",      // language Name
+  'charfrom' : '0980',
+  'charto' : '09FF',
   'chnbin' : "\u09CD",
   'ugar' : "\u09C1",
   'uugar' : "\u09C2",
+  'methods' : {}             // character map
+};
+
+Kanni['languages']['bengali']['methods']['be_tw'] = {
   'method' : 'typewriter',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : false,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
 Kanni['languages']['be_en'] = {
-  'language' : "Bengali",
-  'chnbin' : "\u09CD",
   'method' : 'phonetic',
   'maxchar' : '4',
   'mergeprevchar' : true,
@@ -42,8 +46,6 @@ Kanni['languages']['be_en'] = {
 };
 
 Kanni['languages']['be_unijoy'] = {
-  'language' : "Bengali",
-  'chnbin' : "\u09CD",
   'method' : 'phonetic',
   'maxchar' : '4',
   'mergeprevchar' : true,
@@ -339,7 +341,7 @@ be_unijoy['C'] = '\u09C8'; //Oi Kar
 be_unijoy['(.+)\u200C(.+)'] = "$1$2";
 
 
-Kanni['languages']['be_tw']['charmap'] = be_tw;
-Kanni['languages']['be_en']['charmap'] = be_en;
-Kanni['languages']['be_unijoy']['charmap'] = be_unijoy;
+Kanni['languages']['bengali']['methods']['be_tw']['charmap'] = be_tw;
+Kanni['languages']['bengali']['methods']['be_en']['charmap'] = be_en;
+Kanni['languages']['bengali']['methods']['be_unijoy']['charmap'] = be_unijoy;
 

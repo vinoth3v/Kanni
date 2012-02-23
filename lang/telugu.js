@@ -21,29 +21,31 @@
  * intact, stating me as the original author.
 **/
 
-
 // assign the tw char map
-Kanni['languages']['te_tw'] = {
-  'language' : "Telugu",      // language Name
+Kanni['languages']['telugu'] = {
+  'name' : "Telugu",      // language Name
+  'charfrom' : '0C00',
+  'charto' : '0C7F',
   'chnbin' : "\u0C4D",
   'ugar' : "\u0C41",
   'uugar' : "\u0C42",
-  'method' : 'typewriter',   // typing method
-  'maxchar' : '4',           // maximum char combination
-  'mergeprevchar' : false,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'methods' : {}
 };
 
 // assign the tw char map
-Kanni['languages']['te_en'] = {
-  'language' : "Telugu",      // language Name
-  'chnbin' : "\u0C4D",
-  'ugar' : "\u0C41",
-  'uugar' : "\u0C42",
+Kanni['languages']['telugu']['methods']['te_tw'] = {
+  'method' : 'typewriter',   // typing method
+  'maxchar' : '4',           // maximum char combination
+  'mergeprevchar' : false,  // merge with previous char?
+  'charmap' : {}             // character map
+};
+
+// assign the tw char map
+Kanni['languages']['telugu']['methods']['te_en'] = {
   'method' : 'phonetic',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : true,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
 
@@ -255,6 +257,6 @@ te_en['\u200D0'] = "\u0C66";
 te_en['(.+)\u200C(.+)'] = "$1$2";
 
 
-Kanni['languages']['te_tw']['charmap'] = te_tw;
-Kanni['languages']['te_en']['charmap'] = te_en;
+Kanni['languages']['telugu']['methods']['te_tw']['charmap'] = te_tw;
+Kanni['languages']['telugu']['methods']['te_en']['charmap'] = te_en;
 

@@ -21,29 +21,31 @@
  * intact, stating me as the original author.
 **/
 
-Kanni['languages']['hi_tw'] = {
+Kanni['languages']['hindi'] = {
   'language' : "Hindi",      // language Name
+  'charfrom' : '0900',
+  'charto' : '097F',
   'chnbin' : "\u094D",
   'ugar' : "\u0941",
   'uugar' : "\u0942",
+  'methods' : {}             // character map
+};
+
+Kanni['languages']['hindi']['methods']['hi_tw'] = {
   'method' : 'typewriter',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : false,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
-Kanni['languages']['hi_en'] = {
-  'language' : "Hindi",
-  'chnbin' : "\u0D4D",
+Kanni['languages']['hindi']['methods']['hi_en'] = {
   'method' : 'phonetic',
   'maxchar' : '4',
   'mergeprevchar' : true,
   'charmap' : {}
 };
 
-Kanni['languages']['hi_tw_re'] = {
-  'language' : "Hindi",
-  'chnbin' : "\u094D",
+Kanni['languages']['hindi']['methods']['hi_tw_re'] = {
   'method' : 'Remington',
   'maxchar' : '4',
   'mergeprevchar' : true,
@@ -371,7 +373,7 @@ hi_tw_re['\\,'] = "\u090F";
 hi_tw_re['\\.'] = "\u0923\u094D";
 
 
-Kanni['languages']['hi_tw']['charmap'] = hi_tw;
-Kanni['languages']['hi_tw_re']['charmap'] = hi_tw_re;
-Kanni['languages']['hi_en']['charmap'] = hi_en;
+Kanni['languages']['hindi']['methods']['hi_tw']['charmap'] = hi_tw;
+Kanni['languages']['hindi']['methods']['hi_tw_re']['charmap'] = hi_tw_re;
+Kanni['languages']['hindi']['methods']['hi_en']['charmap'] = hi_en;
 

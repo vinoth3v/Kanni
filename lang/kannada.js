@@ -21,20 +21,24 @@
  * intact, stating me as the original author.
 **/
 
-Kanni['languages']['ka_tw'] = {
-  'language' : "Kannada",      // language Name
+Kanni['languages']['kannada'] = {
+  'name' : "Kannada",      // language Name
+  'charfrom' : '0C80',
+  'charto' : '0CFF',
   'chnbin' : "\u0CCD",
   'ugar' : "\u0CC1",
   'uugar' : "\u0CC2",
+  'methods' : {}             // character map
+};
+
+Kanni['languages']['kannada']['methods']['ka_tw'] = {
   'method' : 'typewriter',   // typing method
   'maxchar' : '4',           // maximum char combination
   'mergeprevchar' : false,  // merge with previous char?
-  'charmap' : {}             // character mao
+  'charmap' : {}             // character map
 };
 
 Kanni['languages']['ka_en'] = {
-  'language' : "Kannada",
-  'chnbin' : "\u0D4D",
   'method' : 'phonetic',
   'maxchar' : '4',
   'mergeprevchar' : true,
@@ -249,6 +253,6 @@ ka_en['(.+)\u200C(.+)'] = "$1$2";
 
 
 
-Kanni['languages']['ka_tw']['charmap'] = ka_tw;
-Kanni['languages']['ka_en']['charmap'] = ka_en;
+Kanni['languages']['kannada']['methods']['ka_tw']['charmap'] = ka_tw;
+Kanni['languages']['kannada']['methods']['ka_en']['charmap'] = ka_en;
 
