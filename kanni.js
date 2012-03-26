@@ -27,22 +27,28 @@
 	
 
 	if ( !window.Kanni ) {
+		
 		/**
 		 * @name Kanni
 		 * @namespace This is the API entry point.
 		 * 
 		 */
 		window.Kanni = {
-			'language' : 'en',		// default language
-			'method' : '',		// default language
-			'_planguage' : 'en', // previous language
-			'_pmethod' : '', // previous typing method
-			'languages' : {},				// languages
-			'switchkey' : 120, 			// F9
-			'activeelement' : null,	// active input element
-			'showtips' : true
+			'language' 				: 'en',		// default language
+			'method' 					: '',			// default typing method
+			'_planguage' 			: 'en', 	// previous language
+			'_pmethod' 				: '', 		// previous typing method
+			'languages' 			: {},			// languages
+			'switchkey' 			: 120, 		// F9
+			'_activeelement' 	: null,		// active input element
+			'showtips' 				: true,		// tips flag
+			'ignoreevents' 		: false, 	// rarely, ignore events to speedup.
+			'attachlangswitch': true,		// 
+			'attachkeyevents' : true,		// 
+			'attachclasses'		: '*'			// *, kanni-enabled
 		};
-	}
+		
+	};
 
 	/**
 	 * @name initialize
@@ -50,26 +56,25 @@
 	 * This is NOT a constructor function.
 	 * 
 	 */
-	Kanni.init = function(attachLangSwitch, switchkey) {
+	Kanni.init = function() {
 		
-		if (typeof attachLangSwitch == 'undefined') {
-			attachLangSwitch = true;
+		window.KanniConfig = window.KanniConfig || {};
+		
+		for(conf in KanniConfig) {
+			Kanni[conf] = KanniConfig[conf];
 		}
 		
-		if (typeof attachLangSwitch !== 'undefined') {
-			this.switchKey(switchkey);
-		}
+		this.switchKey(this.switchkey);
 		
-		if (attachLangSwitch) {
-			Kanni.attachLanguageSwitcher();
+		if (this.attachlangswitch) {
+			
+			this.attachLanguageSwitcher();
 			
 			var select = document.getElementById('kanni-lang-switch');
 			
-			if (!select) {
-				return true;
+			if (select) {
+				Kanni.langMethod(select.value);
 			}
-			
-			Kanni.langMethod(select.value);
 			
 			this._attachEvent(document, 'keyup', function(e) {
 				e = e || event;
@@ -85,6 +90,44 @@
 				
 			});
 			
+		}
+		
+		if (this.attachkeyevents) {
+			
+			if (this.attachclasses == '*') {
+			
+				var inputs = document.getElementsByTagName('input');
+				for(var k=0;k<inputs.length;k++) {
+					var input = inputs[k];
+					
+					if(input.type !=  'text') {
+						continue;
+					}
+					this._attachEvent(input, 'keypress', this.keyPressHandler);
+					this._attachEvent(input, 'focus', this.showLanguageSwitcher);
+					this._attachEvent(input, 'blur', this.hideLanguageSwitcher);
+				}
+				
+				var inputs = document.getElementsByTagName('textarea');
+				for(var k=0;k<inputs.length;k++) {
+					var textarea = inputs[k]
+					this._attachEvent(textarea, 'keypress', this.keyPressHandler);
+					this._attachEvent(textarea, 'focus', this.showLanguageSwitcher);
+					this._attachEvent(textarea, 'blur', this.hideLanguageSwitcher);
+				}
+				
+			} else {
+				
+				var nodes = this._getElementsByClass(this.attachclasses);
+				for(var idx in nodes) {
+					var node = nodes[idx];
+					this._attachEvent(node, 'keypress', this.keyPressHandler);
+					this._attachEvent(node, 'focus', this.showLanguageSwitcher);
+					this._attachEvent(node, 'blur', this.hideLanguageSwitcher);
+				}
+				
+			}
+			
 			var nodes = this._getElementsByClass('kanni-enabled');
 			for(var idx in nodes) {
 				var node = nodes[idx];
@@ -92,17 +135,18 @@
 				this._attachEvent(node, 'focus', this.showLanguageSwitcher);
 				this._attachEvent(node, 'blur', this.hideLanguageSwitcher);
 			}
+			
 		}
 		
-	}
+	};
 	
 	/**
-	 * @name process
+	 * @name digest
 	 * 
 	 * @return array Returns the array that contains left, prev, new and 
 	 * right values which can be used to build the new string.
 	 */ 
-	Kanni.process = function (char, currstr, offset, lang) {
+	Kanni.digest = function (char, currstr, offset, lang) {
 		
 		if (!lang) {
 			lang = {
@@ -168,7 +212,7 @@
 		
 		return { 'left' : leftstr, 'prev' : prevstr, 'new' : newstr, 'right' : rightstr };
 		
-	}
+	};
 	
 	/**
 	 * @name map 
@@ -206,7 +250,7 @@
 		
 		return Kanni.KeyPressProcessor(event, target, doc);
 		
-	}
+	};
 	
 	/**
 	 * Actual keypress processor.
@@ -224,14 +268,35 @@
 		if (Kanni.language == 'en' ) {
 			return true;
 		}
-		var lang = {'language' : this.language, 'method' : this.method}
+		var lang = {'language' : this.language, 'method' : this.method};
 		if (!Kanni.keyValidator(event, lang)) {
 			return true;
 		}
 		
 		var char = String.fromCharCode(key);
 		
-		var node = target;
+		result = this.process(char, target, doc, lang);
+		
+		if (event.preventDefault) {
+			event.preventDefault();
+			event.stopPropagation();
+		} else {
+			event.returnValue = false;
+			event.cancelBubble = true;
+		}
+		
+		if (this.tips()) {
+			this.showTips(result['new']);
+		}
+		
+		return false;
+	};
+	
+	Kanni.process = function(char, node, doc, lang, merge) {
+		
+		if (typeof merge == 'undefined') {
+			merge = true;
+		}
 		
 		if ((node.nodeName.toLowerCase() == "input" && node.type.toLowerCase() == "text") || node.nodeName.toLowerCase() == "textarea") {
 			
@@ -273,7 +338,7 @@
 				
 			}
 			
-			var result = Kanni.process(char, currstr, offset);
+			var result = Kanni.digest(char, currstr, offset);
 			var newstr = result['left'] + result['new'] + result['right'];
 			
 			node.value = newstr;
@@ -334,7 +399,7 @@
 					
 					for(i = 0; i < parentElement.childNodes.length; i++) {
 						tnode = parentElement.childNodes[i];
-						if (tnode.nodeType == 3) {//Text node
+						if (tnode.nodeType == 3) {		//Text node
 							var find = tnode.nodeValue;
 							var pos = text.indexOf(find);
 							if(pos == 0 && text != find) {
@@ -381,13 +446,13 @@
 					}
 				}
 				
-				result = Kanni.process(char, nodevalue, offset);
+				result = Kanni.digest(char, nodevalue, offset);
 				
 				newstr = result['left'] + result['new'] + result['right'] ;
 				//alert('--' + result['left'] + '--' + result['new'] + '--' + result['right'] + '--' );
-				if (oldprevstr.length){
+				if (oldprevstr.length) {
 					pnode.innerText = oldprevstr + newstr;
-				} else if (oldnextstr.length){
+				} else if (oldnextstr.length) {
 					pnode.innerText = newstr + oldnextstr;
 				} else {
 					node.nodeValue = newstr;
@@ -395,7 +460,7 @@
 				
 			} else {
 				
-				result = Kanni.process(char, '', offset);
+				result = Kanni.digest(char, '', offset);
 				
 				newstr = result['left'] + result['new'] + result['right'];
 				
@@ -431,20 +496,9 @@
 			}
 		}
 		
-		if (event.preventDefault) {
-			event.preventDefault();
-			event.stopPropagation();
-		} else {
-			event.returnValue = false;
-			event.cancelBubble = true;
-		}
-		
-		if (this.tips()) {
-			this.showTips(result['new']);
-		}
-		
-		return false;
-  }
+		return result;
+	
+  };
   
   /*
    * @name CKEditorKeyPressHandler
@@ -463,9 +517,11 @@
 		var docevent = event.data.$;
 		var doc = editor.document.$;
 		
+    Kanni._activeelement = doc;
+    
 		return Kanni.KeyPressProcessor(docevent, doc, doc);
 		
-	}
+	};
 	
 	/*
 	 * @name keyValidator
@@ -533,7 +589,7 @@
 			'method' : methodconfig
 		};
 		
-	}
+	};
 	
 	Kanni.charExistsInMap = function(char, lang) {
 		
@@ -565,12 +621,31 @@
 		}
 		
 		return false;
-	}
+	};
 	
 	Kanni.insertChar = function(char) {
-		if (!this.activeelement) {
+		
+		var node = this.activeElement();
+		
+		if (!node) {
 			return;
 		}
+		
+		var lang = {'language' : this.language, 'method' : this.method};
+		
+		var doc = node.ownerDocument;
+		if (!node.ownerDocument) {
+			doc = node;
+		}
+		
+		this.process(char, node, doc, lang, false);
+		
+		this.ignoreevents = true;
+		node.focus();
+		this.ignoreevents = false;
+		
+		return false;
+		
 	};
 	
 	Kanni.showTips = function(str) {
@@ -590,7 +665,7 @@
 		
 		for(var idx=0; idx < atoz.length; idx++) {
 			c = atoz.substr(idx, 1);
-			result = this.process(c, str, str.length);
+			result = this.digest(c, str, str.length);
 			newstr = newstr + '&nbsp;&nbsp;' + result['prev'] + ' + ' + c + ' = <b>' + result['new'] + '</b>';
 		}
 		
@@ -598,15 +673,15 @@
 		tipsdiv.innerHTML = newstr;
 		
 		this.showTipsDiv();
-	}
+	};
 
-	Kanni.switchKey = function(switchkey) {
-		if (switchkey) {
-			this.switchkey = switchkey;
+	Kanni.switchKey = function(key) {
+		if (key) {
+			this.switchkey = key;
 		}
 		
 		return this.switchkey;
-	}
+	};
 	
 	/**
 	 * Set or return the current typing method.
@@ -655,6 +730,19 @@
 	};
 	
 	/**
+	 * set or returns the active element.
+	 * 
+	 */ 
+	Kanni.activeElement = function(node) {
+		
+		if (typeof node != 'undefined') {
+			this._activeelement = node;
+		}
+		
+		return this._activeelement;
+	};
+	
+	/**
 	 * set or returns the tips flag.
 	 * 
 	 */ 
@@ -695,11 +783,12 @@
 		
 	};
 	
+	
 	/**
 	 * attachs the language switch control to the document.
 	 * 
 	 */ 
-	Kanni.attachLanguageSwitcher = function (div){
+	Kanni.attachLanguageSwitcher = function (div) {
 		var css = '#kanni-lang-switch-block {padding:5px;text-align:left;z-index:99;line-height:1em;position:fixed;width:150px;bottom:0px;left:10px;background:#EDF5FA;border:solid 1px #336699;display:none;}';
 		css = css + '#kanni-lang-switch-block select {width:140px}';
 		css = css + '#kanni-lang-tips-block{display:none;z-index:99;position:fixed;left:170px;bottom:0px;background-color:#EDF5FA;border:solid 1px #336699}';
@@ -734,7 +823,7 @@
 		}
 		
 		var check = '<input type="checkbox" ' + tips + ' id="kanni-lang-tips" /> tips | ';
-		var kb = '<a href="#" onclick="Kanni.showKeyboard();">Keyboard</a>'
+		var kb = '<a href="#" onclick="Kanni.showKeyboard(); return false;">Keyboard</a>'
 		var content = '<label for="kanni-lang-switch">Type method</label>'
 				+ '<select id="kanni-lang-switch">' 
 				+ options 
@@ -797,16 +886,18 @@
 		if (!keyboard) {
 			return;
 		}
+		
 		if (!lang) {
 			lang = {
 				'language' : this.language, 
 				'method' : this.method
 			};
 		}
-		for(var idx in keyboard.childNodes) {
+		
+		for(var idx = 0; idx< keyboard.childNodes.length; idx++) {
 			this._setStyleAttribute(keyboard.childNodes[idx], 'display', 'none');
 		}
-			
+		
 		kb = document.getElementById('kanni-kb-' + this.language)
 		if (kb) {
 			
@@ -849,9 +940,13 @@
 		Kanni._setStyleAttribute(keyboard, 'display', 'none');
 	};
 	
-	Kanni.showLanguageSwitcher = function () {
+	Kanni.showLanguageSwitcher = function (event) {
 		
-		Kanni.activeelement = this;
+		if (Kanni.ignoreevents ) {
+			return;
+		}
+		
+		Kanni.activeElement(event.target || event.srcElement);
 		
 		if ('_langswitchtimer_' in Kanni) {
 			clearTimeout(Kanni._langswitchtimer_);
@@ -864,8 +959,11 @@
 		Kanni._setStyleAttribute(div, 'display', 'block');
 	};
 	
-	Kanni.hideLanguageSwitcher = function (){
-		Kanni.activeelement = null;
+	Kanni.hideLanguageSwitcher = function () {
+		if (Kanni.ignoreevents ) {
+			return;
+		}
+		//Kanni.activeElement(null);
 		Kanni._langswitchtimer_ = setTimeout('Kanni._hideLanguageSwitcher();', 5000);
 	};
 
@@ -873,7 +971,7 @@
 	 *  Helper Functions
 	 * 
 	 */
-	Kanni._hideLanguageSwitcher = function (){
+	Kanni._hideLanguageSwitcher = function () {
 		if ('_langswitchtimer_' in Kanni) {
 			clearTimeout(Kanni._langswitchtimer_);
 		}
@@ -895,7 +993,7 @@
 		Kanni._setStyleAttribute(div, 'display', 'block');
 	};
 	
-	Kanni.hideTipsDiv = function (){
+	Kanni.hideTipsDiv = function () {
 		
 		var div = document.getElementById("kanni-lang-tips-block");
 		if (typeof jQuery != 'undefined') {
@@ -962,11 +1060,10 @@
 	Kanni._attachEvent = function(node, event, func) {
 		
 		// if jQuery exists
-		if (typeof jQuery != 'undefined') {
+		/*if (typeof jQuery != 'undefined') {
 			jQuery(node).bind(event, func);
 			return;
-		}
-		
+		}*/
 		if (document.addEventListener) {
 			node.addEventListener(event, func);
 		} else {
@@ -974,7 +1071,7 @@
 		}
 	};
 	
-	Kanni._setStyleAttribute = function(node, name, value){
+	Kanni._setStyleAttribute = function(node, name, value) {
 		
 		// if jQuery exists
 		if (typeof jQuery != 'undefined') {
@@ -999,7 +1096,7 @@
 		
 	};
 
-	Kanni._attachEvent(window, 'load', function(){ 
+	Kanni._attachEvent(window, 'load', function() { 
 		Kanni.init();
 	});
 	

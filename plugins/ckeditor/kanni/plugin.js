@@ -20,12 +20,13 @@
       // allow IME typing in source textarea
       editor.on( 'mode', function() {
         if (editor.mode == 'source' ) {
-          var textarea = editor.textarea.$;
+          var textarea = editor.document.$;
           $(textarea).bind('keypress', Kanni.keyPressHandler);
         }
       });
       
       editor.on('focus', function( event ) {
+        Kanni.activeElement(editor.document.$);
         Kanni.showLanguageSwitcher(event);
       });
       
@@ -36,11 +37,11 @@
       editor.on( 'contentDom', function() {
         
         /* editor.document.$.addEventListener('textInput', function( e ) {
-          //alert('heloo, I am HTML 5');
+          //alert('heloooo, I am HTML 5');
         }, true);*/
         
         
-        editor.document.on( 'keypress', function( event ) { //$(editor.element).bind('keypress', function( e ) { //
+        editor.document.on( 'keypress', function( event ) {
           
           return Kanni.CKEditorKeyPressHandler(event, editor);
           

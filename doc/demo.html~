@@ -5,6 +5,7 @@
 <!-- Include the kanni core js -->
 <script type="text/javascript" src="../kanni.js"></script>
 
+<!-- Include the languages -->
 <script type="text/javascript" src="../lang/be.js"></script>
 <script type="text/javascript" src="../lang/gu.js"></script>
 <script type="text/javascript" src="../lang/hi.js"></script>
