@@ -2,9 +2,13 @@ Change logs
 ===========================
 
 
+version 0.6.x
+===========================
+Support for html5 input search and url fields.
+Added a new function Kanni.enableNode to enable kanni typing on dynamically added input fields.
 
 version 0.5.x
 ===========================
-now it supports HTML editoable area.
-support for CKEditor. Kanni has the ckeditor plugin. 
+Now it supports HTML editoable area.
+Support for CKEditor. Kanni has the ckeditor plugin.
 

@@ -1,13 +1,13 @@
 
-follow these steps to install Kanni to your website. 
+follow these steps to install Kanni to your website.
 
-1. upload "kanni" folder to your server. 
-2. on your webpage include the following lines with in <head> tag. 
+1. upload "kanni" folder to your server.
+2. on your webpage include the following lines with in <head> tag.
 
 <!-- Include the kanni core js -->
 <script type="text/javascript" src="../kanni.js"></script>
 
-3. include the languages you want to use. 
+3. include the languages you want to use.
 <!-- Include the languages -->
 <script type="text/javascript" src="kanni/lang/be.js"></script>
 <script type="text/javascript" src="kanni/lang/gu.js"></script>
@@ -19,13 +19,13 @@ follow these steps to install Kanni to your website.
 <script type="text/javascript" src="kanni/lang/ta.js"></script>
 <script type="text/javascript" src="kanni/lang/te.js"></script>
 
-you can ignore the languages if you dont need. 
+you can ignore the languages if you dont need.
 
 4. on the input textfields or in textarea fields add the kanni-enabled class
 
 example:
 
-<input type="text" size="87" class="kanni-enabled"/>
+<input type="text" size="87" class="kanni-enabled" />
 <textarea class="kanni-enabled" cols="100" rows="10"></textarea>
 
 5. thats it.
@@ -33,17 +33,31 @@ example:
 
 CKEDITOR:
 
-you can use kanni in ckeditor. Kanni has the ckeditor plugin. to use this plugin please see 
+you can use kanni in ckeditor. Kanni has the ckeditor plugin. to use this plugin please see
 
-1. copy the kanni folder (found in kanni/plugins/ckeditor/) to ckeditor root -> plugins folder. 
+1. copy the kanni folder (found in kanni/plugins/ckeditor/) to ckeditor root -> plugins folder.
 2. add the following lines to the webpage
 
 <script type="text/javascript">
 //<![CDATA[
-	CKEDITOR.replace( 'editor1',
-		{
-			extraPlugins : 'kanni'
-		});
+  CKEDITOR.replace( 'editor1',
+    {
+      extraPlugins : 'kanni'
+    });
 //]]>
 </script>
 
+Enable Kanni on Ajax modified text fields:
+
+If you want to enable Kanni typing on the elements that is added by Ajax calls, you have to call the enableNode function after ajax success.
+
+jquery Example
+
+$.ajax({
+  // ajax parameters....
+  success : function(data) {
+    // process the data and and modify page elements
+    var node = document.getElementById('your element id');
+    Kanni.enableNode(node); // enable kanni typing on dynamic fields.
+  }
+});

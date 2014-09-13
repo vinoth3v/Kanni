@@ -1,8 +1,8 @@
 /*  Kanni IME Transliteration Javascript Library
  *  Copyright (c) 2012 http://tamilnanbargal.com
- *  
+ *
  *  Some part of the language mappings are copied from Gopi's Unicode Converter(http://www.higopi.com)
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -224,7 +224,7 @@ Kanni['languages']['tamil'] = {
         '\u200D8' : "\u0BEE",
         '\u200D9' : "\u0BEF",
         '\u200D0' : "0",
-        '(.+)\u200C(.+)' : "$1$2" 
+        '(.+)\u200C(.+)' : "$1$2"
       }
     },
     'ta_99' : {

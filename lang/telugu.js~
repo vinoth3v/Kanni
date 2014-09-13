@@ -1,8 +1,8 @@
 /*  Kanni IME Transliteration Javascript Library
  *  Copyright (c) 2012 http://tamilnanbargal.com
- *
+ *  
  *  Some part of the language mappings are copied from Gopi's Unicode Converter(http://www.higopi.com)
- *
+ *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -226,97 +226,7 @@ Kanni['languages']['telugu'] = {
         '\u200D0' : '\u0C66',
         '(.+)\u200C(.+)' : '$1$2'
       }
-    },
-    'te_ap' : {
-      'method' : 'apple',   // Apple layout
-      'maxchar' : '4',           // maximum char combination
-      'mergeprevchar' : false,  // merge with previous char?
-      'charmap' : {             // character map
-        '\u200C ' : ' ',
-        '\u200Cq' : '',
-        '\u200Cw' : '\u0C40',
-        '\u200Ce' : '\u0C3E',
-        '\u200Cr' : '\u0C3F',
-        '\u200Ct' : '\u0C4A',
-        '\u200Cy' : '\u0C4B',
-        '\u200Cu' : '\u0C46',
-        '\u200Ci' : '\u0C41',
-        '\u200Co' : '\u0C47',
-        '\u200Cp' : '\u0C42',
-        '\u200C\\[' : '\u0C48',
-        '\u200C\\]' : '\u0C4C',
-        '\u200Ch' : '\u0C4D',
-        '\u200CH' : '\u0C4D\u200C',
-        '\u200Cg' : '\u0C02',
-        '\u200CG' : '\u0C03',
-        '\u200CW' : '\u0C43',
-        '\u200CE' : '\u0C44',
-        'q' : '\u0C05',
-        'w' : '\u0C08',
-        'e' : '\u0C06',
-        'r' : '\u0C07',
-        't' : '\u0C12',
-        'y' : '\u0C13',
-        'u' : '\u0C0E',
-        'i' : '\u0C09',
-        'o' : '\u0C0F',
-        'p' : '\u0C0A',
-        '\\[' : '\u0C10',
-        '\\]' : '\u0C14',
-        'Q' : '\u0C36\u200C',
-        'W' : '\u0C0B',
-        'E' : '\u0C60',
-        'R' : '\u0C19\u200C',
-        'T' : '\u0C1E\u200C',
-        'Y' : '\u0C15\u0C4D\u0C37\u200C',
-        'U' : '\u0C36\u0C4D\u0C30\u0C40\u200C',
-        'O' : '\u0C38\u0C4D\u0C24\u0C4D\u0C30',
-        'P' : '\u0C37\u0C4D\u0C1F\u0C4D\u0C30',
-        'a' : '\u0C32\u200C',
-        's' : '\u0C24\u200C',
-        'd' : '\u0C26\u200C',
-        'f' : '\u0C35\u200C',
-        'g' : '\u0C02',
-        'h' : '\u0C4D',
-        'j' : '\u0C15\u200C',
-        'k' : '\u0C30\u200C',
-        'l' : '\u0C28\u200C',
-        '\\;' : '\u0C2A\u200C',
-        '\\\'' : '\u0C38\u200C',
-        'A' : '\u0C33\u200C',
-        'S' : '\u0C25\u200C',
-        'D' : '\u0C27\u200C',
-        'F' : '\u0C36\u200C',
-        'G' : '\u0C03',
-        'H' : '\u0C4D\u200C',
-        'J' : '\u0C16\u200C',
-        'K' : '\u0C31\u200C',
-        'L' : '\u0C23\u200C',
-        '\\:' : '\u0C2B\u200C',
-        '"' : '\u0C37\u200C',
-        'z' : '\u0C1F\u200C',
-        'x' : '\u0C17\u200C',
-        'c' : '\u0C21\u200C',
-        'v' : '\u0C2C\u200C',
-        'b' : '\u0C2E\u200C',
-        'n' : '\u0C2F\u200C',
-        'm' : '\u0C1A\u200C',
-        '/' : '\u0C1C\u200C',
-        'Z' : '\u0C20\u200C',
-        'X' : '\u0C18\u200C',
-        'C' : '\u0C22\u200C',
-        'V' : '\u0C2D\u200C',
-        'B' : '\u0C39\u200C',
-        'N' : '\u0C1C\u0C4D\u0C1E\u200C',
-        'M' : '\u0C1B\u200C',
-        '\\?' : '\u0C1D\u200C',
-        'I' : '/',
-        '\\{' : ':',
-        '\\}' : '!',
-        '<' : ';',
-        '>' : '?',
-         '~'  : '\u200C',
-      }
     }
   }
 };
+
