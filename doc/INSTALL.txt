@@ -9,15 +9,15 @@ follow these steps to install Kanni to your website.
 
 3. include the languages you want to use.
 <!-- Include the languages -->
-<script type="text/javascript" src="kanni/lang/be.js"></script>
-<script type="text/javascript" src="kanni/lang/gu.js"></script>
-<script type="text/javascript" src="kanni/lang/hi.js"></script>
-<script type="text/javascript" src="kanni/lang/ka.js"></script>
-<script type="text/javascript" src="kanni/lang/ma.js"></script>
-<script type="text/javascript" src="kanni/lang/or.js"></script>
-<script type="text/javascript" src="kanni/lang/pu.js"></script>
-<script type="text/javascript" src="kanni/lang/ta.js"></script>
-<script type="text/javascript" src="kanni/lang/te.js"></script>
+<script type="text/javascript" src="kanni/lang/bengali.js"></script>
+<script type="text/javascript" src="kanni/lang/gujarati.js"></script>
+<script type="text/javascript" src="kanni/lang/hindi.js"></script>
+<script type="text/javascript" src="kanni/lang/kannada.js"></script>
+<script type="text/javascript" src="kanni/lang/malayalam.js"></script>
+<script type="text/javascript" src="kanni/lang/oriya.js"></script>
+<script type="text/javascript" src="kanni/lang/punjabi.js"></script>
+<script type="text/javascript" src="kanni/lang/tamil.js"></script>
+<script type="text/javascript" src="kanni/lang/telugu.js"></script>
 
 you can ignore the languages if you dont need.
 
